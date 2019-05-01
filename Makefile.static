@@ -1,0 +1,36 @@
+
+############################
+# Choose compiler and flags
+############################
+CC = g++
+AR = ar
+CFLAGS = -O3 -Wno-unused-result -std=c++11
+LDFLAGS =
+ARFLAGS = rcs
+
+DEFINES =
+
+############################
+# Target so and files
+############################
+DLL = egbb.dll
+STATIC = libegbb.a
+RM = rm -rf
+OBJ = egbbdll.o moves.o index.o decompress.o codec.o cache.o eval_nn.o
+
+######################
+# Rules
+######################
+
+$(DLL): $(OBJ)
+	$(CC) -o $@ $(OBJ) $(LDFLAGS) -shared -lm -lpthread
+	$(AR) $(ARFLAGS) $(STATIC) $(OBJ)
+
+%.o: %.cpp
+	$(CC) $(CFLAGS) $(DEFINES) -c -fPIC -o $@ $<
+
+eval_nn.o: eval_nn.cpp
+	$(CC) $(CFLAGS) $(DEFINES) ${TF_INC} -c -fPIC -o $@ $<
+
+clean:
+	$(RM) $(OBJ)
